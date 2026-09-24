@@ -364,6 +364,14 @@
 
       <!-- Hero Section -->
       <section id="hero" class="relative pt-6 pb-8 lg:pt-10 lg:pb-12 overflow-hidden scroll-mt-24">
+
+        <!-- Decorative Ambient Insignia Watermark in Background -->
+        <div class="absolute -top-10 -left-10 sm:left-4 lg:left-8 w-[340px] h-[300px] sm:w-[480px] sm:h-[430px] lg:w-[560px] lg:h-[500px] opacity-[0.06] pointer-events-none select-none -z-10 filter drop-shadow-[0_0_50px_rgba(0,255,102,0.3)]">
+          <svg class="w-full h-full" viewBox="0 0 150.15552 134.74237">
+            <use href="#bk-crest-symbol"/>
+          </svg>
+        </div>
+
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center">
@@ -390,12 +398,6 @@
                     <span class="font-mono text-xs text-red-400 font-semibold tracking-wide">RECRUITMENT TRACTOR BEAM: OFFLINE</span>
                   </div>
                 @endif
-                <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-void-900 border border-slate-700 font-mono text-xs text-slate-300">
-                  <span class="text-alien font-bold">ALLIANCE ID:</span>
-                  <span>{{ $effectiveAllianceId }}</span>
-                  <span class="text-slate-600">|</span>
-                  <span class="text-slate-400">EST. DEC 2014</span>
-                </div>
               </div>
 
               <!-- Main Title & Latin Slogan from recruitment flyer -->
@@ -475,6 +477,11 @@
                     
                     <!-- Chrome Rib Lines on Hull -->
                     <path d="M50 64 Q120 74 190 64" fill="none" stroke="#64748b" stroke-width="1.5"/>
+
+                    <!-- Insignia Embossed on Center of Saucer Hull -->
+                    <g transform="translate(109.5, 63) scale(0.14)" opacity="0.9" filter="drop-shadow(0 0 3px rgba(0, 255, 102, 0.4))">
+                      <use href="#bk-crest-symbol"/>
+                    </g>
                     
                     <!-- Neon Underbelly Lights -->
                     <ellipse cx="120" cy="68" rx="84" ry="11" fill="none" stroke="#00ff66" stroke-width="2" stroke-dasharray="10 7"/>
@@ -613,10 +620,19 @@
 
                 </div>
 
-                <!-- Ground Teleportation Ring & Aura -->
+                <!-- Ground Teleportation Ring & Aura with Projected Insignia Floor Sigil -->
                 <div class="relative z-10 w-full flex flex-col items-center">
-                  <div class="w-72 h-10 bg-alien/20 rounded-[100%] border border-alien/50 blur-[2px] animate-pulse"></div>
-                  <div class="w-56 h-6 bg-alien/40 rounded-[100%] blur-[8px] -mt-8"></div>
+                  <div class="relative w-72 h-10 flex items-center justify-center">
+                    <div class="w-full h-full bg-alien/20 rounded-[100%] border border-alien/50 blur-[2px] animate-pulse"></div>
+                    <div class="absolute inset-x-8 top-1 bottom-1 bg-alien/40 rounded-[100%] blur-[8px]"></div>
+                    
+                    <!-- Projected Insignia Floor Sigil -->
+                    <div class="absolute -top-1.5 w-11 h-10 opacity-50 pointer-events-none filter drop-shadow-[0_0_8px_rgba(0,255,102,0.9)] animate-pulse">
+                      <svg class="w-full h-full" viewBox="0 0 150.15552 134.74237">
+                        <use href="#bk-crest-symbol"/>
+                      </svg>
+                    </div>
+                  </div>
                 </div>
 
               </div>
@@ -638,7 +654,7 @@
             <div class="lg:col-span-5">
               <div class="glass-panel hud-corner rounded-2xl p-6 sm:p-7 text-center relative overflow-hidden group border-alien/30">
                 <div class="absolute top-3 right-3 text-[10px] font-mono text-alien/70 border border-alien/30 px-2 py-0.5 rounded">
-                  OFFICIAL INSIGNIA
+                  OFFICIAL CREST
                 </div>
 
                 <!-- Large 3D Metallic Emblem Display -->
@@ -653,22 +669,24 @@
                 </div>
 
                 <!-- Insignia Specs & Description -->
-                <div class="border-t border-slate-800 pt-4 text-left space-y-1.5">
-                  <div class="flex items-center justify-between font-mono text-xs">
-                    <span class="text-slate-400">ALLIANCE SYMBOL:</span>
-                    <span class="text-white font-bold">The {{ $effectiveAllianceName }} Insignia</span>
+                <div class="border-t border-slate-800 pt-4 text-left space-y-2 font-mono text-xs">
+                  <div class="flex items-center justify-between">
+                    <span class="text-slate-400">ALLIANCE:</span>
+                    <span class="text-white font-bold">{{ $effectiveAllianceName }}</span>
                   </div>
-                  <div class="flex items-center justify-between font-mono text-xs">
-                    <span class="text-slate-400">ICONOGRAPHY:</span>
-                    <span class="text-alien font-bold">Blade of the Binding Vow</span>
-                  </div>
-                  <div class="flex items-center justify-between font-mono text-xs">
+                  <div class="flex items-center justify-between">
                     <span class="text-slate-400">FOUNDED:</span>
                     <span class="text-alien font-bold">December 12, 2014</span>
                   </div>
-                  <div class="flex items-center justify-between font-mono text-xs">
+                  <div class="flex items-center justify-between">
                     <span class="text-slate-400">IN-GAME IDENTIFIER:</span>
                     <span class="text-white font-bold">Alliance #{{ $effectiveAllianceId }} (👽)</span>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <span class="text-slate-400">RECRUITMENT:</span>
+                    <span class="{{ ($recruitmentOpen ?? false) ? 'text-alien font-bold' : 'text-slate-400 font-semibold' }}">
+                      {{ ($recruitmentOpen ?? false) ? 'Active Intake' : 'Standby' }}
+                    </span>
                   </div>
                 </div>
 
@@ -686,11 +704,11 @@
               </div>
 
               <p class="text-slate-300 text-sm sm:text-base leading-relaxed font-light">
-                The <strong class="text-white font-semibold">{{ $effectiveAllianceName }}</strong> carry a dual identity unlike any other faction in Politics &amp; War. On the field of battle, we rally behind the official Black Knights insignia: a manifestation of the ancient, sacred <em class="text-slate-100 italic">geis</em>. In ancient lore, a geis is an inviolable vow and an absolute command that seals fate and bends will. Our crest depicts this winged sigil of destiny impaled and anchored by a central sword, embodying an iron covenant of mutual protection, absolute loyalty, and decisive military force.
+                The <strong class="text-white font-semibold">{{ $effectiveAllianceName }}</strong> carry a storied legacy and a culture unlike any other faction in Politics &amp; War. As one of the longest-standing alliances in the game, we've weathered global wars, leaderboard climbs, and every shifting era in Orbis history. When a nation flies our banner, they enter an ironclad mutual defense pact: no member stands alone, and no raid goes unanswered.
               </p>
 
               <p class="text-slate-300 text-sm sm:text-base leading-relaxed font-light">
-                When a ruler joins under this blade, they enter an unbreakable pact: no member stands alone, and no raid goes unanswered. Alongside this sacred resolve, we are the <span class="text-alien font-medium">World's Dankest Alliance</span>, proudly embracing our ayylien lore, tractor-beam abductions, and a tight-knit community where every recruit is known by name rather than swallowed by bureaucracy.
+                Alongside our battle-tested history, we are the <span class="text-alien font-medium">World's Dankest Alliance</span>: proudly embracing our iconic ayylien culture, tractor-beam abductions, and a tight-knit community where every recruit gets personal war coaching, rapid city grants, and a direct line to leadership rather than getting lost in mega-alliance bureaucracy.
               </p>
 
               <!-- Motto Strip -->
@@ -745,7 +763,7 @@
               </p>
               <div class="pt-3 border-t border-slate-800 text-xs font-mono text-alien/80 flex items-center gap-2">
                 <span class="w-1.5 h-1.5 rounded-full bg-alien"></span>
-                <span>Continuity since 2014</span>
+                <span>Proven Longevity &amp; Stability</span>
               </div>
             </div>
 
@@ -803,7 +821,13 @@
       <section class="pt-4 pb-10 lg:pt-6 lg:pb-12 bg-void-900/50 relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
-          <div class="rounded-3xl glass-panel p-6 sm:p-8 border border-alien/30">
+          <div class="rounded-3xl glass-panel p-6 sm:p-8 border border-alien/30 relative overflow-hidden">
+            <!-- Decorative Insignia Watermark in Background -->
+            <div class="absolute -right-8 -bottom-8 w-64 h-56 opacity-[0.035] pointer-events-none select-none">
+              <svg class="w-full h-full" viewBox="0 0 150.15552 134.74237">
+                <use href="#bk-crest-symbol"/>
+              </svg>
+            </div>
             <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6 pb-5 border-b border-slate-800">
               <div>
                 <span class="text-xs font-mono uppercase tracking-widest text-alien font-bold">ALLIANCE BENEFITS</span>
@@ -855,8 +879,13 @@
           
           <!-- Protocol Header -->
           <div class="text-center max-w-3xl mx-auto mb-8 lg:mb-10">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-alien/10 border border-alien/30 font-mono text-xs text-alien uppercase tracking-wider mb-2.5">
-              OFFICIAL ONBOARDING PROTOCOL
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-alien/10 border border-alien/30 font-mono text-xs text-alien uppercase tracking-wider mb-2.5">
+              <div class="w-4 h-3.5 flex items-center justify-center flex-shrink-0">
+                <svg class="w-full h-full" viewBox="0 0 150.15552 134.74237">
+                  <use href="#bk-crest-symbol"/>
+                </svg>
+              </div>
+              <span>OFFICIAL ONBOARDING PROTOCOL</span>
             </div>
             <h2 class="text-2xl sm:text-4xl font-display font-black text-white uppercase tracking-tight">
               <span class="sr-only">Apply to {{ $effectiveAllianceName }} - </span>
