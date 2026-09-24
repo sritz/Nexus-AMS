@@ -95,7 +95,8 @@ class ApplyPageController extends Controller
     {
         $alliance = $this->seoService->primaryAlliance();
         $identity = $this->seoService->resolvedIdentity($alliance);
-        $applicationsOpen = SettingService::isApplicationsEnabled();
+        $applicationsOpen = SettingService::isApplicationsEnabled() || SettingService::isRecruitmentEnabled();
+        $recruitmentOpen = SettingService::isRecruitmentEnabled();
         $primaryAllianceId = $this->membershipService->getPrimaryAllianceId();
         $campaignContext = $this->campaignContext($request);
 
@@ -104,11 +105,13 @@ class ApplyPageController extends Controller
             'content' => $content,
             'seo' => $this->seoService->applyMetadata($alliance),
             'allianceName' => $identity['alliance_name'],
+            'primaryAllianceId' => $primaryAllianceId,
             'applicationsOpen' => $applicationsOpen,
+            'recruitmentOpen' => $recruitmentOpen,
             'applicationStartUrl' => $applicationsOpen && $primaryAllianceId > 0
                 ? route('apply.start', $campaignContext)
                 : null,
-            'discordUrl' => $this->seoService->safePublicUrl($alliance?->discord_link),
+            'discordUrl' => $this->seoService->safePublicUrl($alliance?->discord_link) ?: 'https://discord.gg/VrJFQMBH2R',
             'existingMemberRegistrationUrl' => route('apply.member-registration', $campaignContext),
         ]);
     }
@@ -120,7 +123,7 @@ class ApplyPageController extends Controller
     {
         $campaignContext = $this->campaignContext($request);
 
-        if (! SettingService::isApplicationsEnabled()) {
+        if (! (SettingService::isApplicationsEnabled() || SettingService::isRecruitmentEnabled())) {
             return redirect()
                 ->route('apply.show', $campaignContext)
                 ->with([

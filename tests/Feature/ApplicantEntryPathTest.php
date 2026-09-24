@@ -23,6 +23,7 @@ class ApplicantEntryPathTest extends TestCase
         Cache::flush();
         config()->set('services.pw.alliance_id', 123);
         SettingService::setApplicationsEnabled(true);
+        SettingService::setRecruitmentEnabled(true);
 
         Alliance::factory()->create([
             'id' => 123,
@@ -54,6 +55,8 @@ class ApplicantEntryPathTest extends TestCase
             ->assertSee('https://discord.gg/nexus-test', false)
             ->assertSee('/apply nationid:&lt;your nation ID&gt;', false)
             ->assertSee(route('apply.member-registration', ['utm_campaign' => 'summer-drive']), false)
+            ->assertSee('RECRUITMENT TRACTOR BEAM: ONLINE')
+            ->assertDontSee('RECRUITMENT TRACTOR BEAM: OFFLINE')
             ->assertDontSee('not-retained@example.test')
             ->assertDontSee('href="'.route('register').'"', false);
     }
@@ -86,6 +89,7 @@ class ApplicantEntryPathTest extends TestCase
     public function test_paused_applications_do_not_send_an_applicant_to_an_external_dead_end(): void
     {
         SettingService::setApplicationsEnabled(false);
+        SettingService::setRecruitmentEnabled(false);
 
         $this->get(route('apply.start'))
             ->assertRedirect(route('apply.show'))
@@ -95,6 +99,21 @@ class ApplicantEntryPathTest extends TestCase
             ->assertOk()
             ->assertSee('Applications are currently paused')
             ->assertDontSee('Start in Politics &amp; War', false);
+    }
+
+    public function test_recruitment_tractor_beam_badge_reflects_recruitment_setting(): void
+    {
+        SettingService::setRecruitmentEnabled(true);
+        $this->get(route('apply.show'))
+            ->assertOk()
+            ->assertSee('RECRUITMENT TRACTOR BEAM: ONLINE')
+            ->assertDontSee('RECRUITMENT TRACTOR BEAM: OFFLINE');
+
+        SettingService::setRecruitmentEnabled(false);
+        $this->get(route('apply.show'))
+            ->assertOk()
+            ->assertSee('RECRUITMENT TRACTOR BEAM: OFFLINE')
+            ->assertDontSee('RECRUITMENT TRACTOR BEAM: ONLINE');
     }
 
     public function test_existing_member_registration_is_a_separate_tracked_path(): void
@@ -137,5 +156,29 @@ class ApplicantEntryPathTest extends TestCase
             ->assertSee('For current alliance members')
             ->assertSee('Applicant nations cannot register here')
             ->assertSee(route('apply.show'), false);
+    }
+
+    public function test_discord_buttons_link_to_canonical_invite_fallback_when_unconfigured(): void
+    {
+        Alliance::query()->update(['discord_link' => null]);
+
+        $this->get(route('apply.show'))
+            ->assertOk()
+            ->assertSee('https://discord.gg/VrJFQMBH2R', false)
+            ->assertDontSee('Ask recruitment staff for the official Discord invite');
+    }
+
+    public function test_step_one_shows_application_start_when_recruitment_is_enabled(): void
+    {
+        SettingService::setApplicationsEnabled(false);
+        SettingService::setRecruitmentEnabled(true);
+
+        $this->get(route('apply.show'))
+            ->assertOk()
+            ->assertSee('Start in Politics &amp; War', false)
+            ->assertDontSee('Applications are currently paused');
+
+        $this->get(route('apply.start'))
+            ->assertRedirect('https://politicsandwar.com/alliance/join/id=123');
     }
 }
